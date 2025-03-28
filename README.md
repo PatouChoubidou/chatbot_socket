@@ -1,8 +1,11 @@
-# Chatbot for documents using a socket connection
+# Chatbot for documents 
 This is a test for chatting with uploaded document-files locally.  
 Handles pdf, docx, rtf, txt files.
 
+The socket connection is something I personally havent used a lot...
+
 ## Fatures
+- Takes user input in audio or text form
 - Switch between a RAG search for input or use the whole text as llm context. 
 - Drag n drop a document file to question it or delete the document and just chat. 
 - Start a new conversation and delete the former conversation history.
