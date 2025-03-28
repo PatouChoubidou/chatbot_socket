@@ -1,0 +1,14 @@
+backend/__pycache__/
+.venv/
+backend/.venv
+backend/whisper/*
+backend/in.wav
+backend/in.webm
+backend/output.aiff
+backend/output.wav
+
+frontend/src/assets/mic.afdesign
+
+chatbot_socket.code-workspace
+.DS_STORE
+
