@@ -10,9 +10,10 @@ Handles pdf, docx, rtf, txt files.
 
 ## Tools in use 
 ### backend
-- Ollama 
-- Fastapi
-- Whisper
+- llm interaction: Ollama 
+- server: Fastapi
+- stt: whisper
+- tts: pyttsx3
 - Chroma DB 
 
 ### frontend
