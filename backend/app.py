@@ -336,20 +336,16 @@ async def chat(mywebsocket: WebSocket):
             if json['name'] == 'question':
 
                 q = json['data']
+                print(q)
                 
                 # if no pdf folder there make one
                 if not os.path.isdir(doc_dir):
                     os.makedirs(doc_dir)
                 
-                # check if files are there
-                if not os.listdir(doc_dir):
-                    await ask_llm(q)
-                else:
-                    if not isFullTextSearch:
-                        await ask_rag(q)
-                    if isFullTextSearch:
-                        await ask_full_text(q)
-       
+                response = await chatbot.ask_ollama( q, conversation, isFullTextSearch, doc_dir, rag)
+                print(response['message']['content'])
+                newMessage(response['message']['role'], response['message']['content'])
+                
                 # tts an audio of the chatbot response aka last message
                 # audio is then fetched through api endpoint /wav from the client
                 await tts.generateAiff(conversation[-1]['content'])

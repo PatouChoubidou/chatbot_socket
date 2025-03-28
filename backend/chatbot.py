@@ -1,4 +1,5 @@
 import ollama
+from ollama import ChatResponse
 import requests
 import subprocess
 from datetime import datetime
@@ -8,9 +9,66 @@ from . import read_in
 
 # https://github.com/ollama/ollama-python
 
+
+async def ask_ollama(user_question: str, messages: list, isFullText: bool, file_dir: str, rag: my_rag.MyRAG):
+    """
+
+    """
+    doc_txt = "empty"
+    
+    if isFullText:
+        print("\n using full text search\n")
+        
+        for file_path in os.listdir(file_dir):
+            
+            filenameAndExtension = os.path.basename(file_path)
+            filename = os.path.splitext(filenameAndExtension)[0]
+            file_extension = os.path.splitext(filenameAndExtension)[1]
+         
+            print(f"filename is: {filename}")
+            print(f"file_extension is: {file_extension}")
+         
+            path_with_dir = os.path.join(file_dir, file_path)
+
+            if file_extension == ".pdf":
+                doc_txt = await read_in.getFullTextFromPDF(path_with_dir)
+            if file_extension == ".docx" or file_extension == ".doc":
+                doc_txt = await read_in.getFullTextFromDoc(path_with_dir)
+            if file_extension == ".txt" or file_extension == ".rtf":
+                doc_txt = await read_in.getFullTextFromTxt(path_with_dir)
+    
+    else:
+        print("\nusing rag search\n")
+        doc_txt = await rag.searchDocs(user_question, max_results=10)
+
+    prompt = f"""
+        Answer the question in the language of the question below:
+
+        If not empty, use the result of this document search: {doc_txt}.
+        Use given metadata to refine your anwers quotations.
+        If the document_txt is empty anwswer by your best knowlegde. 
+        Improve your anwser for follow up questions with the former conversation history: {messages}.
+        Do not make anything up. 
+
+        Question: {user_question}
+
+        Answer:
+    """
+
+    print(prompt)
+    message = {
+        "role": 'user',
+        "content": prompt,   
+    }
+
+    response = await ollama.AsyncClient().chat(model='llama3.2', messages=[message])
+    return response
+
+
 async def answer_question(messages):
     """
     Takes a list of messages and returns an ollama response object
+    Use this Function if no other Function fits.
     Params:
         messages: list[message] - a list of ollama chat messages
     Returns:
@@ -106,6 +164,113 @@ async def anwser_question_with_rag(question_in: str, messages: list, rag: my_rag
     
     response = await ollama.AsyncClient().chat(model='llama3.2', messages=[message])
     return response
+
+
+async def ask_ollama(user_question: str, messages: list, isFullText: bool, file_dir: str, rag: my_rag.MyRAG):
+    """
+
+    """
+    doc_txt = "empty"
+    
+    if isFullText:
+        print("\n using full text search\n")
+        
+        for file_path in os.listdir(file_dir):
+            
+            filenameAndExtension = os.path.basename(file_path)
+            filename = os.path.splitext(filenameAndExtension)[0]
+            file_extension = os.path.splitext(filenameAndExtension)[1]
+         
+            print(f"filename is: {filename}")
+            print(f"file_extension is: {file_extension}")
+         
+            path_with_dir = os.path.join(file_dir, file_path)
+
+            if file_extension == ".pdf":
+                doc_txt = await read_in.getFullTextFromPDF(path_with_dir)
+            if file_extension == ".docx" or file_extension == ".doc":
+                doc_txt = await read_in.getFullTextFromDoc(path_with_dir)
+            if file_extension == ".txt" or file_extension == ".rtf":
+                doc_txt = await read_in.getFullTextFromTxt(path_with_dir)
+    
+    else:
+        print("\nusing rag search\n")
+        doc_txt = await rag.searchDocs(user_question, max_results=10)
+
+    prompt = f"""
+        Answer the question in the language of the question below:
+
+        If not empty, use the result of this document search: {doc_txt}.
+        Use given metadata to refine your anwers quotations.
+        If the document_txt is empty anwswer by your best knowlegde. 
+        Improve your anwser for follow up questions with the former conversation history: {messages}.
+        Do not make anything up. 
+
+        Question: {user_question}
+
+        Answer:
+    """
+
+    print(prompt)
+    message = {
+        "role": 'user',
+        "content": prompt,   
+    }
+
+    response = await ollama.AsyncClient().chat(model='llama3.2', messages=[message])
+    return response
+
+
+
+async def ask_ollama_func(user_q, messages):
+    """
+    """
+   
+    avaiable_funcs = {
+        'anwser_question_with_rag': anwser_question_with_rag,
+        'answer_question': answer_question,
+        'answer_question_with_full_text':answer_question_with_full_text,
+    }
+
+    response = await ollama.AsyncClient().chat(
+            'llama3.2',
+            messages=[{'role': 'user', 'content': user_q }],
+            tools=[anwser_question_with_rag,
+                   answer_question,
+                   answer_question_with_full_text
+                ],
+        )
+
+    print('the response: ', response, '\n\n')
+
+    #check if tool call is initated
+    if response.message.tool_calls:
+        for tool in response.message.tool_calls:
+            if function_to_call := avaiable_funcs.get(tool.function.name):
+                print('\nCalling function: ', tool.function.name)
+                print('\nArguments: , \n', tool.function.arguments, "\n")
+                print('\nFunction Output: \n', function_to_call(**tool.function.arguments), "\n")
+                response = function_to_call(**tool.function.arguments)
+            else: 
+                print('\nFunction: ', tool.function.name, 'not found') 
+
+      
+    prompt2 = f"""
+            Answer the question below:
+            Use the result of this web search {response}.
+
+           
+
+            Question: {user_q}  
+
+            Answer:           
+     """
+        
+    result = await ollama.AsyncClient().chat(
+        'llama3',
+        messages=[{'role': 'user', 'content': prompt2 }],
+    )
+
    
 
 async def is_ollama_running():

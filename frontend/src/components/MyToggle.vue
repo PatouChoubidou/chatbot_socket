@@ -1,5 +1,5 @@
 <script setup>
-import { defineModel, defineProps } from 'vue'
+// import { defineModel, defineProps } from 'vue'
 
 defineProps({
   label: String
