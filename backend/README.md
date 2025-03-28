@@ -1,8 +1,8 @@
 # Chatbot with socket  
 
 ## backend
-source .venv/bin/activate
-fastapi dev app.py
+- source .venv/bin/activate
+- fastapi dev app.py
 
 ### 
 https://fastapi.tiangolo.com/advanced/websockets/#in-production
