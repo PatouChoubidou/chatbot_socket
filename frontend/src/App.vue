@@ -6,7 +6,7 @@ import { RouterLink, RouterView } from 'vue-router'
 <template>
   <header>
     <div class="wrapper">
-      <h1>La Chatte 🙄</h1>
+      <h1>La Chate 🙄</h1>
     </div>
   </header>
   <RouterView />
