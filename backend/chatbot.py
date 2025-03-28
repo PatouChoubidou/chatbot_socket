@@ -24,18 +24,20 @@ async def ask_ollama(user_question: str, messages: list, isFullText: bool, file_
             filenameAndExtension = os.path.basename(file_path)
             filename = os.path.splitext(filenameAndExtension)[0]
             file_extension = os.path.splitext(filenameAndExtension)[1]
-         
+            
             print(f"filename is: {filename}")
             print(f"file_extension is: {file_extension}")
          
             path_with_dir = os.path.join(file_dir, file_path)
 
+            doc_txt += f"\n{filenameAndExtension}:\n"
+
             if file_extension == ".pdf":
-                doc_txt = await read_in.getFullTextFromPDF(path_with_dir)
+                doc_txt += await read_in.getFullTextFromPDF(path_with_dir)
             if file_extension == ".docx" or file_extension == ".doc":
-                doc_txt = await read_in.getFullTextFromDoc(path_with_dir)
+                doc_txt += await read_in.getFullTextFromDoc(path_with_dir)
             if file_extension == ".txt" or file_extension == ".rtf":
-                doc_txt = await read_in.getFullTextFromTxt(path_with_dir)
+                doc_txt += await read_in.getFullTextFromTxt(path_with_dir)
     
     else:
         print("\nusing rag search\n")
