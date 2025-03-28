@@ -14,7 +14,7 @@ Handles pdf, docx, rtf, txt files.
 - server: Fastapi
 - stt: whisper
 - tts: pyttsx3
-- Chroma DB 
+- rag: Chroma DB 
 
 ### frontend
 - Vue.js
