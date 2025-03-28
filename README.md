@@ -1,6 +1,12 @@
 # Chatbot with socket
-This is test for chatting with uploaded document-files locally.  
-Handles pdf, docx, rtf, txt files
+This is a test for chatting with uploaded document-files locally.  
+Handles pdf, docx, rtf, txt files.
+
+## Fatures
+- Switch between a RAG search for input or use the whole text as llm context. 
+- Drag n drop a document file to question it or delete the document and just chat. 
+- Start a new conversation and delete the former conversation history.
+- Switch audio reply to autoplay.
 
 ## Tools in use 
 ### backend
@@ -11,7 +17,6 @@ Handles pdf, docx, rtf, txt files
 
 ### frontend
 - Vue.js
-
 
 ## Usage
 #### backend
