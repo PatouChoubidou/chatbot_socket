@@ -14,10 +14,10 @@ Handles pdf, docx, rtf, txt files
 
 
 ## Usage
-### backend
+#### backend
 source .venv/bin/activate
 fastapi dev app.py
 
-### frontend
+#### frontend
 npm run dev
 
