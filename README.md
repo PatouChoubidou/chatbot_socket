@@ -1,6 +1,7 @@
 # Chatbot for documents 
-This is a test for chatting with uploaded document-files locally.  
+This is a test for chatting with one uploaded document locally.  
 Handles pdf, docx, rtf, txt files.
+
 
 The socket connection is something I personally havent used a lot...
 
@@ -30,5 +31,7 @@ fastapi dev app.py
 #### frontend
 npm run dev
 
+## Questions Arise
+Should it be extendend to use multiple files? It easily can be
 
 
