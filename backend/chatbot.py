@@ -12,7 +12,16 @@ from . import read_in
 
 async def ask_ollama(user_question: str, messages: list, isFullText: bool, file_dir: str, rag: my_rag.MyRAG):
     """
-
+    Generate an answer. If the full text search option is false 
+    and a document is uploaded it uses a rag search. 
+    If no document is uploaded it just chats away...
+    Params:
+        user_question: str - the users question
+        messages: list[message] - the conversation history
+        file_dir: str - the directory in which the uploaded documents are stored
+        rag: MyRAG - an interface for chroma db 
+    Returns: 
+        response: Ollama ChatResponse - 
     """
     doc_txt = "empty"
     
@@ -66,6 +75,36 @@ async def ask_ollama(user_question: str, messages: list, isFullText: bool, file_
     response = await ollama.AsyncClient().chat(model='llama3.2', messages=[message])
     return response
 
+
+async def start_ollama_on_mac():
+    """
+    Start the local ollama dev server via subprocess on mac osx
+    """
+    t_text = f'open -a "ollama"'
+    proc = subprocess.run(t_text, shell=True)
+    if proc.returncode == 0:
+         print (f"ollama dev server started")
+    else:
+        print(f"ollama dev server could not be started")
+
+
+async def stop_ollama_on_mac():
+    """
+    Stop the local ollama dev server via subprocess on mac osx
+    """
+    t_text = f"osascript -e 'quit app \"ollama\"'"
+    proc = subprocess.run(t_text, shell=True)
+    if proc.returncode == 0:
+         print (f"ollama dev server stopped")
+    else:
+        print(f"ollama dev server could not be stopped")
+   
+
+
+
+
+'''
+##### --------- Here come a few functions which were used before ---------#####
 
 async def answer_question(messages):
     """
@@ -168,64 +207,10 @@ async def anwser_question_with_rag(question_in: str, messages: list, rag: my_rag
     return response
 
 
-async def ask_ollama(user_question: str, messages: list, isFullText: bool, file_dir: str, rag: my_rag.MyRAG):
-    """
-
-    """
-    doc_txt = "empty"
-    
-    if isFullText:
-        print("\n using full text search\n")
-        
-        for file_path in os.listdir(file_dir):
-            
-            filenameAndExtension = os.path.basename(file_path)
-            filename = os.path.splitext(filenameAndExtension)[0]
-            file_extension = os.path.splitext(filenameAndExtension)[1]
-         
-            print(f"filename is: {filename}")
-            print(f"file_extension is: {file_extension}")
-         
-            path_with_dir = os.path.join(file_dir, file_path)
-
-            if file_extension == ".pdf":
-                doc_txt = await read_in.getFullTextFromPDF(path_with_dir)
-            if file_extension == ".docx" or file_extension == ".doc":
-                doc_txt = await read_in.getFullTextFromDoc(path_with_dir)
-            if file_extension == ".txt" or file_extension == ".rtf":
-                doc_txt = await read_in.getFullTextFromTxt(path_with_dir)
-    
-    else:
-        print("\nusing rag search\n")
-        doc_txt = await rag.searchDocs(user_question, max_results=10)
-
-    prompt = f"""
-        Answer the question in the language of the question below:
-
-        If not empty, use the result of this document search: {doc_txt}.
-        Use given metadata to refine your anwers quotations.
-        If the document_txt is empty anwswer by your best knowlegde. 
-        Improve your anwser for follow up questions with the former conversation history: {messages}.
-        Do not make anything up. 
-
-        Question: {user_question}
-
-        Answer:
-    """
-
-    print(prompt)
-    message = {
-        "role": 'user',
-        "content": prompt,   
-    }
-
-    response = await ollama.AsyncClient().chat(model='llama3.2', messages=[message])
-    return response
-
-
 
 async def ask_ollama_func(user_q, messages):
     """
+    Here the idea would be to let the model choose which search the user wants and call them as func.
     """
    
     avaiable_funcs = {
@@ -259,10 +244,7 @@ async def ask_ollama_func(user_q, messages):
       
     prompt2 = f"""
             Answer the question below:
-            Use the result of this web search {response}.
-
-           
-
+            Use the result of this search {response}.
             Question: {user_q}  
 
             Answer:           
@@ -285,32 +267,12 @@ async def is_ollama_running():
         if req.status_code == 200:
             return True
     except:
-        return False
+        return False'
+
+'''
     
       
-async def start_ollama_on_mac():
-    """
-    Start the local ollama dev server via subprocess on mac osx
-    """
-    t_text = f'open -a "ollama"'
-    proc = subprocess.run(t_text, shell=True)
-    if proc.returncode == 0:
-         print (f"ollama dev server started")
-    else:
-        print(f"ollama dev server could not be started")
 
-
-async def stop_ollama_on_mac():
-    """
-    Stop the local ollama dev server via subprocess on mac osx
-    """
-    t_text = f"osascript -e 'quit app \"ollama\"'"
-    proc = subprocess.run(t_text, shell=True)
-    if proc.returncode == 0:
-         print (f"ollama dev server stopped")
-    else:
-        print(f"ollama dev server could not be stopped")
-   
 
   
     
