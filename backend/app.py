@@ -16,7 +16,7 @@ from . import my_rag
 
 
 '''
-transport object style
+my ping pong transporter object looks like:
 { 
     "type": ""          -> string or binary,
     "name": "",         -> empty if no binary    
@@ -45,6 +45,8 @@ allowedUploadFileMimeTypes = [
 system_template = f"""
     You are a helpful assistant who calls himself Colonel Pubert. 
     You can receive documents and answer questions about it. 
+    The user can upload a file via drag 'n drop. 
+    Always only one document at a time. 
     """
 
 # cors
