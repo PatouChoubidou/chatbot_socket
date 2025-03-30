@@ -5,6 +5,9 @@ Handles pdf, docx, rtf, txt files.
 
 The socket connection is something I personally havent used a lot...
 
+https://github.com/user-attachments/assets/79de14bd-73c2-4f25-b386-dc4061304108
+
+
 ## Fatures
 - Takes user input in audio or text form
 - Switch between a RAG search for input or use the whole text as llm context. 
