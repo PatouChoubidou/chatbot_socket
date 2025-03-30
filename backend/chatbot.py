@@ -57,7 +57,8 @@ async def ask_ollama(user_question: str, messages: list, isFullText: bool, file_
 
         If not empty, use the result of this document search: {doc_txt}.
         Use given metadata to refine your anwers quotations.
-        If the document_txt is empty anwswer by your best knowlegde. 
+        
+        If the document text is empty anwswer by your best knowlegde. 
         Improve your anwser for follow up questions with the former conversation history: {messages}.
         Do not make anything up. 
 
@@ -98,6 +99,19 @@ async def stop_ollama_on_mac():
          print (f"ollama dev server stopped")
     else:
         print(f"ollama dev server could not be stopped")
+
+
+async def is_ollama_running():
+    """
+    Pings the local ollama server and checks if it is running
+    """
+    ollama_url = "http://localhost:11434"
+    try:
+        req = requests.get(ollama_url)
+        if req.status_code == 200:
+            return True
+    except:
+        return False
    
 
 
@@ -254,20 +268,6 @@ async def ask_ollama_func(user_q, messages):
         'llama3',
         messages=[{'role': 'user', 'content': prompt2 }],
     )
-
-   
-
-async def is_ollama_running():
-    """
-    Pings the local ollama server and checks if it is running
-    """
-    ollama_url = "http://localhost:11434"
-    try:
-        req = requests.get(ollama_url)
-        if req.status_code == 200:
-            return True
-    except:
-        return False'
 
 '''
     

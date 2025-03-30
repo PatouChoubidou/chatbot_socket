@@ -231,13 +231,16 @@ async def chat(mywebsocket: WebSocket):
                 except Exception as e:
                     print(e)
                 
+                newMessage("system", "transcribing audio...")
+                await updateFrontend(mywebsocket, conversation)
                 await convertWebmToWav(file_name)
                 in_txt = await stt.transcribe(file_name)
                 print(f"stt text {in_txt}")
-                newMessage("system", "transcribing audio...")
+                newMessage("user", in_txt)
                 await updateFrontend(mywebsocket, conversation)
 
-                await ask_llm(in_txt)
+                response = await chatbot.ask_ollama(in_txt, conversation, isFullTextSearch, doc_dir, rag)
+                newMessage(response['message']['role'], response['message']['content'])
                 await updateFrontend(mywebsocket, conversation)
 
 
