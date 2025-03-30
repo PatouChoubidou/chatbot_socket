@@ -12,3 +12,5 @@ frontend/src/assets/mic.afdesign
 chatbot_socket.code-workspace
 .DS_STORE
 
+*.mp4
+
