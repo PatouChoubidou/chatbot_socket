@@ -5,7 +5,10 @@ Handles pdf, docx, rtf, txt files.
 
 The socket connection is something I personally havent used a lot...
 
+
+
 https://github.com/user-attachments/assets/79de14bd-73c2-4f25-b386-dc4061304108
+
 
 
 ## Fatures
